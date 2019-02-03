@@ -1,0 +1,156 @@
+<html>
+    <head>
+        <style>
+            table tr td {
+            border: 1px solid;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            }
+
+            table {
+            border-collapse: collapse;
+            }
+
+            #success table{
+                float: left;
+                margin: 2px;
+            }
+
+            #success {
+                border: 1px solid green;
+            }
+        </style>
+        <script>
+        const tab = {
+            0: [0, 0, 0, 0, 0, 0, 0, 0],
+            1: [0, 0, 0, 0, 0, 0, 0, 0],
+            2: [0, 0, 0, 0, 0, 0, 0, 0],
+            3: [0, 0, 0, 0, 0, 0, 0, 0],
+            4: [0, 0, 0, 0, 0, 0, 0, 0],
+            5: [0, 0, 0, 0, 0, 0, 0, 0],
+            6: [0, 0, 0, 0, 0, 0, 0, 0],
+            7: [0, 0, 0, 0, 0, 0, 0, 0]
+        };
+
+        const timeout = 0;
+        let totalSuccess = 0;
+
+        function fillQueenPath(currentTab, posX, posY) {
+        currentTab[posX][posY] = 1;
+        //diagonal fill
+        for(let i=posX, j=1; i<7; i++, j++){
+            currentTab[i+1][posY+j] = -1;
+            currentTab[i+1][posY-j] = -1;
+        }
+        for(let i=posX, j=1; i>0; i--, j++){
+            currentTab[i-1][posY+j] = -1;
+            currentTab[i-1][posY-j] = -1;
+        }
+        //fill x
+        for(let i=posX; i<7; i++){
+            currentTab[i+1][posY] = -1;
+        }
+        for(let i=posX; i>0; i--){
+            currentTab[i-1][posY] = -1;
+        }
+        //fill y
+        for(let i=posY; i<7; i++){
+            currentTab[posX][i+1] = -1;
+        }
+        for(let i=posY; i>0; i--){
+            currentTab[posX][i-1] = -1;
+        }
+        
+        }
+
+        function printTab(currentTab) {
+            let html = '<table>';
+            for(let i=0; i<8; i++) {
+            html += '<tr>';
+            for(let y=0; y<8; y++) {
+                html += '<td>';
+            if(currentTab[i][y] === -1) {
+                html += '*';
+            } else if(currentTab[i][y] === 1) {
+                html += '@';
+            } else {
+                html += '&nbsp;';
+            }
+            html += '</td>';
+            }
+            html += '</tr>';
+        }
+        return html;
+        }
+
+        function play(posX, posY, currentTab, queensFilled, currentStack = []) {
+            if(queensFilled == 8) {
+                document.getElementById('success').innerHTML += printTab(currentTab);
+                console.log('queensFilled: ', queensFilled);
+                totalSuccess++;
+                //return true;
+            }
+            if(posX >= 8) {
+                console.log('posX: ', posX);
+                stack = currentStack.pop();
+                if(stack && stack.currentTab) {
+                    setTimeout(() => {
+                        play(stack.posX, stack.posY+1, stack.currentTab, stack.queensFilled, currentStack);
+                    }, timeout);
+                }
+                return true;
+            }
+            if(posY >= 8) {
+                stack = currentStack.pop();
+                if(stack && stack.currentTab) {
+                    setTimeout(() => {
+                        play(stack.posX, stack.posY+1, stack.currentTab, stack.queensFilled, currentStack);
+                    }, timeout);
+                }
+                return true;
+            }
+            if(currentTab[posX][posY] === 0) {
+                currentStack.push({posX, posY, currentTab: clone(currentTab), queensFilled});
+                fillQueenPath(currentTab, posX, posY);
+                queensFilled++;
+                document.getElementById('main').innerHTML = printTab(currentTab);
+                setTimeout(() => {
+                    play(posX+1, 0, clone(currentTab), queensFilled, currentStack);
+                }, timeout);
+            } else {
+                setTimeout(() => {
+                    play(posX, posY+1, clone(currentTab), queensFilled, currentStack);
+                }, timeout);
+            }
+        }
+
+        function clone(obj) {
+            return JSON.parse(JSON.stringify(obj));
+        }
+
+        function main() {
+            play(0, 0, clone(tab), 0);
+            // play(0, 1, clone(tab), 0);
+            // play(0, 2, clone(tab), 0);
+            // play(0, 3, clone(tab), 0);
+            // play(0, 4, clone(tab), 0);
+            // play(0, 5, clone(tab), 0);
+            // play(0, 6, clone(tab), 0);
+            // play(0, 7, clone(tab), 0);
+        }
+
+        document.addEventListener("DOMContentLoaded", function(event) {
+            main();
+            console.log(totalSuccess);
+        });
+
+
+        </script>
+    </head>
+    <body>
+        <div id="main"></div>
+        <br><br><br>
+        <div id="success"></div>
+    </body>
+</html>
