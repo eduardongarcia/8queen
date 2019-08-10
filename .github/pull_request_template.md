@@ -1,4 +1,8 @@
-# Pull Request Template
+---
+name: Pull Request
+about: Create a PR based on an issue
+
+---
 
 ## Description
 
