@@ -1,10 +1,13 @@
 ---
-name: Pull Request
-about: Create a PR based on an issue
+name: Bug report
+about: Create a report to help us improve
+title: ''
+labels: bug
+assignees: ''
 
 ---
 
-## Description
+**Description**
 
 Please include a summary of the change and which issue is fixed. Please also include relevant motivation and context. List any dependencies that are required for this change.
 
